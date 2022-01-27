@@ -7,8 +7,12 @@
 1. hashmap: O(1) lookup
 2. struct: like an object
 
+
 ## functions: very verbose
 - prevent ambiguity because the creators are scared of side effects, lost coins etc..
+- some functions actually cant be seen by others even if everything can be "seen" in the blockchain
+- eg. some guy hides his multiply fn to prevent, other ppl from using his fn.
+- sgRediscover voucher is a token, sgd is a currency, we have a public transfer fn, but we have internal fns like those needing to check
 
 * solidity will actly recc u to "memory" some arrays!
     - `memory` basically tells the compiler this is a temp arr, not something that will need to be logged on the blockchain
