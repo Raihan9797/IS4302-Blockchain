@@ -5,7 +5,7 @@ contract Lab2 {
     uint256[] qty; // dynamic
 
     function add_Price(uint256 price) public {
-        require (price > 0, "invalid Price!");
+        // require (price > 0, "invalid Price!");
         sgd = price;
     }
     function add_Qty(uint256[] memory arr) public {

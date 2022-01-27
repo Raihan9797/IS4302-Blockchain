@@ -6,7 +6,7 @@ contract Lab2Exercise {
 
     function check_arr (uint256[] memory arr) private pure returns (bool) {
         for (uint256 i = 0; i < arr.length; i++) {
-            if (arr[i] <= 0) {
+            if (arr[i] < 0) {
                 return false;
             }
         }
@@ -14,8 +14,8 @@ contract Lab2Exercise {
     }
 
     function add_Price(uint256[] memory prices) public {
-        bool is_valid = check_arr(prices);
-        require (is_valid == true, "Values not valid");
+        // bool is_valid = check_arr(prices);
+        // require (is_valid == true, "Values not valid");
         sgd = prices;
     }
 
@@ -26,8 +26,8 @@ contract Lab2Exercise {
 
         it will just be used temporarily and then thrown out
         */
-        bool is_valid = check_arr(arr);
-        require (is_valid == true, "Values not valid");
+        // bool is_valid = check_arr(arr);
+        // require (is_valid == true, "Values not valid");
         qty = arr;
     }
 
