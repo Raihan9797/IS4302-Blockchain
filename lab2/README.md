@@ -1,39 +1,40 @@
 # lab 2 notes
 * 1 byte = 8 bits
-we can specify the sizes of different ints
-because anything stored on the blockchain very ex.
+* we can specify the sizes of different ints because anything stored on the blockchain very ex.
+    * so best to declare fixed size array when possible 
+
+## complex data types
+1. hashmap: O(1) lookup
+2. struct: like an object
+
+## functions: very verbose
+- prevent ambiguity because the creators are scared of side effects, lost coins etc..
+
+* solidity will actly recc u to "memory" some arrays!
+    - `memory` basically tells the compiler this is a temp arr, not something that will need to be logged on the blockchain
+
+* use `view` when we are NOT changing anything in the contract!
+    - we loop through the eles, but we never change anyth
+    - view = no change or commits to blockchain => no gas fees!
+    - compiler will tell you if you need to use view
+
+* `pure`: variables in this functions do not come from the Contract
+    - eg. for the add_Price(uint256 price), we can first check if the value is valid eg. must be > 10 before assigning it to the contract.
+    - as of right now, this `price` variable is not related to the contract yet and thus the compiler will recommend you use the `pure` keyword.
+
+* `payable`: able ot receive ether
+
+## Compile then deploy
 
 
-declare fixed size array when possible
+## Extra questions and pointers after the lab
+1. what happens when ppl spam view? As of rn, t
 
-hashmap: O(1) lookup
-struct: like an object
+* contracts can own other contracts
+* smart contracts are used when you dont want users to be involved
 
-functions are very disgusting lmao.
-no ambiguity because they scared of fking up...
-solidity will actly recc u to "memory" some arrays!
-
-we view because we are NOT changing anything!
-we loop through the eles, but we never change anyth
-view = no change or commits to blockchain => no gas fees!
-
-
-pure: doesnt even look at the contract
-payable: able ot receive ether
-compiler will tell u if u need to view!
-
-
-compile then deploy
-
-what happens when ppl spam view: vibhu will check
-
-contracts can own other contracts
-smart contracts are used when you dont want users to be involved
-
-/* eg. nft auction house
-customers want to see all of the available nfts
-instead of searching through the auction house address and see the blockchain
-we can just use contracts to automate this process
-
-basically a program in the blockchain
-*/
+eg. Of smart contract use: nft auction house
+1. customers want to see all of the available nfts
+2. instead of searching through the auction house address and see the blockchain
+3. we can just use contracts to automate this process
+* basically a program in the blockchain
