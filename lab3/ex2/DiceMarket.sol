@@ -1,12 +1,15 @@
 pragma solidity ^0.5.0;
 import "./Dice.sol";
+import "./DiceToken.sol";
 
 // my version
 contract DiceMarket {
 
     // contains dicecontract (which has a mapping of dices)
     Dice diceContract;
-    uint256 public comissionFee;
+    DiceToken diceTokenContract;
+
+    uint256 public comissionFee; // 
     address _owner = msg.sender;
     mapping (uint256 => uint256) public listPrices;
     // mapping (uint256 => Dice) public unlisted;
@@ -22,9 +25,10 @@ contract DiceMarket {
     // owner creates a dice market to sell his own dice
     // and loses the commission fee?
 
-    constructor(Dice diceAddress, uint256 fee) public {
+    constructor(Dice diceAddress, DiceToken diceTokenAddress, uint256 fee_in_dt) public {
         diceContract = diceAddress;
-        comissionFee = fee;
+        diceTokenContract = diceTokenAddress;
+        comissionFee = fee_in_dt; // now in dt
     }
 
     modifier prevOwnerOnly(uint256 id) {
@@ -32,15 +36,20 @@ contract DiceMarket {
         _;
     }
 
+    function convert_eth_to_dt(uint256 eth_amt) public pure returns (uint256) {
+        return eth_amt / 10000000000000000;
+    }
+
     // price needs to be >= value + fee
-    function list(uint256 id, uint256 price_in_wei) public prevOwnerOnly(id) {
+    function list(uint256 id, uint256 price_in_dt) public prevOwnerOnly(id) {
         // first transfer to dice to dice market contracts address
-        // diceContract.transfer(id, address(this));
+        // get dice val in eth, convert to dt
         uint256 curr_dice_val = diceContract.getDiceValue(id);
-        require(price_in_wei >= curr_dice_val + comissionFee, "price not high enough");
-        listPrices[id] = price_in_wei;
+        uint256 curr_dice_val_in_dt = convert_eth_to_dt(curr_dice_val);
         
-        
+        // check priceindt > curr_diceval in dt + comm fee
+        require(price_in_dt >= curr_dice_val_in_dt + comissionFee, "price in dt not high enough");
+        listPrices[id] = price_in_dt;
     }
 
     // // unlist dice from market
@@ -56,19 +65,24 @@ contract DiceMarket {
         return listPrices[id];
     }
 
-    function buy(uint256 id) public payable {
-        uint256 dice_price = checkPrice(id);
-        require (msg.value > dice_price, "Value supplied not sufficient to buy the dice.");
-        
-        uint256 change = msg.value - dice_price;
-        msg.sender.transfer(change);
-        address payable recipient = address(uint160(diceContract.getPrevOwner(id)));
-        recipient.transfer(dice_price - comissionFee);
-        diceContract.transfer(id, msg.sender);
-        // buy dice at the requested price
-        // airtight solution: return any xtra $ to sender
+    function checkBuyerDt() public view returns (uint256) {
+        return diceTokenContract.checkCreditAddress(msg.sender);
+    }
 
-        // return amount to seller
+    function buy(uint256 id) public payable {
+        // check if buyer has enough dt to buy dice
+        uint256 buyer_dt = checkBuyerDt();
+        uint256 dice_price = checkPrice(id);
+        require (buyer_dt > dice_price, "dt balance not sufficient to buy dice.");
+        
+        uint256 dt_for_seller = dice_price - comissionFee; 
+        // lister gets money (price - comm)
+        address payable recipient = address(uint160(diceContract.getPrevOwner(id)));
+        diceTokenContract.transferDt(recipient, dt_for_seller);
+        diceTokenContract.transferDt(_owner, comissionFee);
+
+        // buyer gets dice
+        diceContract.transfer(id, msg.sender);
     }
 
     // set appropriate modifier to check for conditions
