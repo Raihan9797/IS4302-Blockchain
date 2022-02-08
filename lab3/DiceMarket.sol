@@ -62,9 +62,13 @@ contract DiceMarket {
         
         uint256 change = msg.value - dice_price;
         msg.sender.transfer(change);
+        address payable recipient = address(uint160(diceContract.getPrevOwner(id)));
+        recipient.transfer(dice_price - comissionFee);
         diceContract.transfer(id, msg.sender);
         // buy dice at the requested price
         // airtight solution: return any xtra $ to sender
+
+        // return amount to seller
     }
 
     // set appropriate modifier to check for conditions
