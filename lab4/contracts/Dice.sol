@@ -23,6 +23,7 @@ contract Dice {
     mapping(uint256 => dice) public dices;
 
     //function to create a new dice, and add to 'dices' map. requires at least 0.01ETH to create
+    event added ();
     function add(
         uint8 numberOfSides,
         uint8 color
@@ -44,12 +45,13 @@ contract Dice {
         
         uint256 newDiceId = numDices++;
         dices[newDiceId] = newDice; //commit to state variable
+        emit added();
         return newDiceId;   //return new diceId
     }
 
     //modifier to ensure a function is callable only by its owner    
     modifier ownerOnly(uint256 diceId) {
-        require(dices[diceId].owner == msg.sender);
+        require(dices[diceId].owner == msg.sender, "You are not the owner");
         _;
     }
     
@@ -81,9 +83,11 @@ contract Dice {
     }
     
     //transfer ownership to new owner
+    event transferred(address newOwner);
     function transfer(uint256 diceId, address newOwner) public ownerOnly(diceId) validDiceId(diceId) {
         dices[diceId].prevOwner = dices[diceId].owner;
         dices[diceId].owner = newOwner;
+        emit transferred(newOwner);
     }
 
     //get number of sides of dice    
