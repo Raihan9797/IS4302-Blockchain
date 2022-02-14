@@ -3,7 +3,7 @@ import "./Dice.sol";
 
 contract DiceBattle {
     Dice diceContract;
-    mapping(address => address) battle_pair;
+    mapping(address => address) public battle_pair;
 
     constructor(Dice diceAddress) public {
         diceContract = diceAddress;

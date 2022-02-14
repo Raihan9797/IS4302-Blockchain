@@ -53,6 +53,7 @@ contract('DiceBattle', function(accounts) {
 
     // Test 3: Test dice battle working properly
     it('DiceBattle working properly', async () => {
+        console.log(diceBattleInstance.battlePair);
         let doBattle = await diceBattleInstance.battle(0, 1, {from: accounts[1]});
         console.log(doBattle);
         truffleAssert.eventEmitted(doBattle, 'battlewin');
