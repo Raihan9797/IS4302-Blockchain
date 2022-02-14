@@ -106,6 +106,10 @@ contract Dice {
         return dices[diceId].luckyTimes;
     }
 
+    function getOwner(uint256 diceId) public view validDiceId(diceId) returns (address) {
+        return dices[diceId].owner;
+    }
+
     //Ex 1 Destroy Dice
     function destroyDice(uint256 diceId) payable public ownerOnly(diceId) validDiceId(diceId) {
         uint256 value = dices[diceId].creationValue;
