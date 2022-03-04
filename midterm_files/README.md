@@ -20,3 +20,5 @@ Was doable but need to understand the requirements.
     - More importantly, the weights are all cleared! This means there are no votes which means all votes are equal. This results in voteDrawn! Thats the easy way of solving the 2nd test case.
 
 2. Of course we can do it more realistically.
+- Trying to but there are a lot of issues, we basically have to change quite a few functions and keep in mind a few variables that we did not really focus on during the exam (due to time constraints). 
+- Current issue is that i am getting BN {..} basically a big number and i dont know if my values are correct unless i convert the big number properly. Going to stop here for now.

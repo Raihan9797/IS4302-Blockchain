@@ -66,19 +66,67 @@ contract('Pool', function(accounts) {
     })
 
     it('Test VoteWon', async() => {
-        console.log(await poolInstance.getVoterList.call());
+        // console.log(await poolInstance.getVoterList.call());
         let endvote = await poolInstance.endVoting({from: accounts[0]});
-        console.log(endvote);
+        // console.log(endvote);
         truffleAssert.eventEmitted(endvote, "VoteWon");
         console.log('----------TESTING OF WON CASE DONE------------')
     });
 
 
     it('Test VoteDrawn', async() => {
+        // easy passing method
+        /*
         console.log(await poolInstance.getVoterList.call());
         let endvote = await poolInstance.endVoting({from: accounts[0]});
         console.log(endvote);
         truffleAssert.eventEmitted(endvote, "VoteDrawn");
+        */
+
+        // accounts get pt
+        let getPT = await poolInstance.getPT({from:accounts[1], value: 1E18});
+        truffleAssert.eventEmitted(getPT, "GetPT");
+        let checkPT = await poolInstance.getTokenBalance.call(accounts[1]);
+        assert.strictEqual(checkPT.toNumber(), 150, "PT not deployed correctly");
+        
+        let getPT2 = await poolInstance.getPT({from:accounts[2], value: 1E18});
+        truffleAssert.eventEmitted(getPT2, "GetPT");
+        let checkPT2 = await poolInstance.getTokenBalance.call(accounts[2]);
+        assert.strictEqual(checkPT2.toNumber(), 250, "PT not deployed correctly");
+
+        // acct 1 send 50, acct 2 send 50, total should be 100
+        let sendToken = await poolInstance.sendTokens(30, {from:accounts[1]});
+        truffleAssert.eventEmitted(sendToken, "TokenSent");
+
+        let sendToken2 = await poolInstance.sendTokens(30, {from:accounts[2]});
+        truffleAssert.eventEmitted(sendToken2, "TokenSent");
+
+        let tpool = await poolInstance.getTotalPool.call();
+        assert.strictEqual(tpool.toNumber(), 60, "TotalPool doesn't align");
+
+        // check voterlistlength
+        let vlistlen = await poolInstance.getVoterListLength.call();
+        assert.strictEqual(vlistlen.toNumber(), 2);
+
+        // voting a1 votes for a2 with 50
+        let vote_acct1 = await poolInstance.vote(accounts[1], {from: accounts[2]});
+        truffleAssert.eventEmitted(vote_acct1, "Voted");
+        let vote_acct2 = await poolInstance.vote(accounts[2], {from: accounts[1]});
+        truffleAssert.eventEmitted(vote_acct2, "Voted");
+
+        let checkVote = await poolInstance.getVote.call(accounts[1]);
+        assert.strictEqual(checkVote, accounts[2], "vote not working");
+
+        // end vote and should be drawn
+        // let endvote = await poolInstance.endVoting({from: accounts[0]});
+        let endvote = await poolInstance.endVoting.call({from: accounts[0]});
+        console.log(await poolInstance.getVoterList.call());
+        console.log(await poolInstance.getTotalPool.call());
+        console.log(endvote);
+        /*
+        truffleAssert.eventEmitted(endvote, "VoteDrawn");
+        */
+
     })
 
     

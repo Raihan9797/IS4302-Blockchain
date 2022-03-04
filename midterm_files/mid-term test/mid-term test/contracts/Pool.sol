@@ -38,6 +38,7 @@ contract Pool {
 
     function transferPT(address to, uint256 amount) private { //transfer PT from Pool contract to an address, will be called within the contract when voting ends to transfer the PT in the pool to the winner or return the PT
         erc20instance.transfer(to, amount);
+        totalPool -= amount;
         emit Transfer(to, amount);
     }
 
@@ -91,6 +92,7 @@ contract Pool {
         // If % exceeds 50% then transfer all PTs to winner
         if(maxvotes > totalPool/2) {
 
+            transferPT(maxCandidate, totalPool);
             emit VoteWon(maxCandidate, totalPool);
           
             
@@ -111,7 +113,9 @@ contract Pool {
             delete tokenWeights[add];
             delete votingChoice[add];
             delete candidateVotes[add];
+            delete voterList;
         }
+        totalPool = 0;
         
 
         return maxvotes;
