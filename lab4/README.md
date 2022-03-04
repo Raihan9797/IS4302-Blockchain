@@ -67,7 +67,7 @@ This is because from our tut, we have been using a different compiler esp in rem
 
 ```
 
-3. Other errors: Understanding the migrations
+# 3. Other errors: Understanding the migrations
 Basically, just like how in Remix, we created the Dice AND THEN Dicemarket (since it needs Dice), We need to tell the computer to do the same thing. This is where migration files comes in. If you get this error:
 ```
 Error:  *** Deployment Failed ***
@@ -76,5 +76,30 @@ Error:  *** Deployment Failed ***
 ```
 It most likely means you dont understand files that you are using. For this example, it's because you didnt follow the correct number of params (dicemarket needs dice address and fee)
 
+* bignumber errors:
+```
+Deploying 'DiceMarket'
+   ----------------------
+
+Error:  *** Deployment Failed ***
+
+"DiceMarket" -- overflow (fault="overflow", operation="BigNumber.from", value=1000000000000000000, code=NUMERIC_FAULT, version=bignumber/5.0.8).
+```
+This is because in the deployent file, I was trying to use a big value `1e18`. To resolve that i need to use web3 bignumber:
+```js
+// in migrations/2_deploy_contracts.js
+const Dice = artifacts.require("Dice");
+const DiceMarket = artifacts.require("DiceMarket");
+const web3 = require('web3'); // NEED THIS
+
+module.exports = function(deployer, network, accounts) {
+  deployer.deploy(Dice).then(function() {
+      return deployer.deploy(DiceMarket, Dice.address, web3.utils.toBN(1e18));
+  });
+};
+
+```
+
 # 4. scientific notation for wei.
 * 1 eth = 1e18 wei. You can use 1e18 for wei. Make sure web3 is installed!
+
