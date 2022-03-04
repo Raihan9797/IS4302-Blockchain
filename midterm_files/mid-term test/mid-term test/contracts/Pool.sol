@@ -89,7 +89,7 @@ contract Pool {
             }
         }
         // If % exceeds 50% then transfer all PTs to winner
-        if(maxvotes >= totalPool/2) {
+        if(maxvotes > totalPool/2) {
 
             emit VoteWon(maxCandidate, totalPool);
           

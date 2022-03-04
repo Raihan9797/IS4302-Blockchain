@@ -37,6 +37,7 @@ contract('Pool', function(accounts) {
     });
 
     it('Check Voter List length', async () => {
+        // console.log(poolInstance.getVoterList.call()) // call the fn, see the output
         let vlistlen = await poolInstance.getVoterListLength.call();
         assert.strictEqual(vlistlen.toNumber(), 2);
     });
@@ -65,15 +66,19 @@ contract('Pool', function(accounts) {
     })
 
     it('Test VoteWon', async() => {
-        let vote_acct2 = await poolInstance.vote(accounts[2], {from: accounts[1]});
-        truffleAssert.eventEmitted(vote_acct2, "VoteWon");
-        //Please work on this test
+        console.log(await poolInstance.getVoterList.call());
+        let endvote = await poolInstance.endVoting({from: accounts[0]});
+        console.log(endvote);
+        truffleAssert.eventEmitted(endvote, "VoteWon");
+        console.log('----------TESTING OF WON CASE DONE------------')
     });
 
 
     it('Test VoteDrawn', async() => {
-        truffleAssert.eventEmitted(vote_acct2, "VoteDrawn");
-        //Please work on this test
+        console.log(await poolInstance.getVoterList.call());
+        let endvote = await poolInstance.endVoting({from: accounts[0]});
+        console.log(endvote);
+        truffleAssert.eventEmitted(endvote, "VoteDrawn");
     })
 
     
