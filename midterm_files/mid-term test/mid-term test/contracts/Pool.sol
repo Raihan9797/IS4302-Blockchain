@@ -61,8 +61,8 @@ contract Pool {
 
         // else add who he voted
         votingChoice[msg.sender] = candidate;
-        candidateVotes[candidate] = 0;
-        // candidateVotes[candidate] += tokenWeights[msg.sender];
+        // candidateVotes[candidate] = 0;
+        candidateVotes[candidate] += tokenWeights[msg.sender];
 
         // Return an error saying "Can't vote twice!" if a voter tries to vote twice
         emit Voted(candidate);
