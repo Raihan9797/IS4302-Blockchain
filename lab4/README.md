@@ -28,3 +28,53 @@
             "Price is too low"
         );
     ```
+
+# 2. Basic compiling and common errors
+When you copy the sample 3 lab files, you can try and compile to check that your code is ok
+1. Changing truffle-config.js
+* Uncomment and change port number to 7545
+```js
+  networks: {
+    // Useful for testing. The `development` name is special - truffle uses it by default
+    // if it's defined here and no other network is specified at the command line.
+    // You should run a client (like ganache-cli, geth or parity) in a separate terminal
+    // tab if you use this network and you must also set the `host`, `port` and `network_id`
+    // options below to some value.
+    //
+    development: {
+     host: "127.0.0.1",     // Localhost (default: none)
+     port: 7545,            // Standard Ethereum port (default: none)
+     network_id: "*",       // Any network (default: none)
+    },
+
+```
+
+* change compiler to 0.5.16
+You will get this error:
+```
+,Warning: Source file does not specify required compiler version! Consider adding "pragma solidity ^0.8.11;"
+--> project:/contracts/DiceMarket.sol
+```
+This is because from our tut, we have been using a different compiler esp in remix and even our sol files have a pragma.... So change it to whatever works. In our case:
+```js
+  // Configure your compilers
+  compilers: {
+    solc: {
+        // CHANGE THE VERSION!
+      version: "0.5.16",    // Fetch exact version from solc-bin (default: truffle's version) 
+      // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
+      // settings: {          // See the solidity docs for advice about optimization and evmVersion
+
+```
+
+3. Other errors: Understanding the migrations
+Basically, just like how in Remix, we created the Dice AND THEN Dicemarket (since it needs Dice), We need to tell the computer to do the same thing. This is where migration files comes in. If you get this error:
+```
+Error:  *** Deployment Failed ***
+
+"DiceMarket" -- Invalid number of parameters for "undefined". Got 1 expected 2!.
+```
+It most likely means you dont understand files that you are using. For this example, it's because you didnt follow the correct number of params (dicemarket needs dice address and fee)
+
+# 4. scientific notation for wei.
+* 1 eth = 1e18 wei. You can use 1e18 for wei. Make sure web3 is installed!
